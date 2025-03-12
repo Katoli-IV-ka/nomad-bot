@@ -1,0 +1,34 @@
+import asyncio
+
+from aiogram import Bot, Dispatcher
+from aiogram.fsm.storage.memory import MemoryStorage
+
+
+from config import BOT_TOKEN
+
+
+# Инициализация бота
+bot = Bot(token=BOT_TOKEN)
+dp = Dispatcher(storage=MemoryStorage())
+
+async def main():
+
+    # Регистрация обработчиков
+    from loader import loader
+    loader(dp)
+
+    # Запуск планировщика
+    #from notification.schedule import scheduler
+    #scheduler.start()
+
+    # Запуск бота
+    await bot.delete_webhook(drop_pending_updates=True)
+    print("Bot is running...")
+    await dp.start_polling(bot)
+
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
+
+
