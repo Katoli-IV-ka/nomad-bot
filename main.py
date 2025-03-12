@@ -18,14 +18,13 @@ async def main():
     loader(dp)
 
     # Запуск планировщика
-    #from notification.schedule import scheduler
-    #scheduler.start()
+    from schedule import scheduler
+    scheduler.start()
 
     # Запуск бота
     await bot.delete_webhook(drop_pending_updates=True)
     print("Bot is running...")
     await dp.start_polling(bot)
-
 
 
 if __name__ == "__main__":
