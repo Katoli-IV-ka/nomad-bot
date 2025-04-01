@@ -23,7 +23,12 @@ async def main():
 
     # Запуск бота
     await bot.delete_webhook(drop_pending_updates=True)
-    print("Bot is running...")
+
+    #трекинг бота
+    await bot.send_message(
+        chat_id="7895383475",
+        text="Bot is running..."
+    )
     await dp.start_polling(bot)
 
 

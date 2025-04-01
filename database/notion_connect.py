@@ -1,0 +1,205 @@
+import requests
+
+# Конфигурация для подключения к Notion API
+NOTION_TOKEN='secret_AbbSZWbyZO8zLqWHAL6WCK2nYRihGYD5kOCZMvUUAT5'
+DATABASE_ID="1c8fa05ac45f80c499ecfef705bb0282"
+NOTION_HEADERS = {
+    "Authorization": f"Bearer {NOTION_TOKEN}",
+    "Content-Type": "application/json",
+    "Notion-Version": "2022-06-28"
+}
+
+
+# Получить все записи из таблицы
+def get_clean_rows(start_from: str = None, end_to: str = None, match_id: str = None):
+    """
+    Получает упрощённые записи из Notion и фильтрует по дате и ID.
+
+    :param start_from: (str, формат 'YYYY-MM-DD') — фильтр: дата начала >=
+    :param end_to: (str, формат 'YYYY-MM-DD') — фильтр: дата конца <=
+    :param match_id: (str) — точный поиск по ID (например, 'BRN-0012')
+    :return: List[dict]
+    """
+    url = f"https://api.notion.com/v1/databases/{DATABASE_ID}/query"
+    response = requests.post(url, headers=NOTION_HEADERS)
+    response.raise_for_status()
+    raw_results = response.json().get("results", [])
+
+    simplified = []
+    for page in raw_results:
+        props = page["properties"]
+        item = {
+            "id": props["User ID"]["title"][0]["text"]["content"] if props["User ID"]["title"] else "",
+            "cost": props["Cost"]["number"],
+            "kids": props["Kids"]["checkbox"],
+            "pets": props["Pets"]["checkbox"],
+            "kupel": props["Kupel"]["checkbox"],
+            "shooting": props["Shooting"]["checkbox"],  # Новое поле Shooting
+            "phone": props["Phone"]["phone_number"],
+            "contact": props["Contact"]["rich_text"][0]["text"]["content"] if props["Contact"]["rich_text"] else "",
+            "note": props["Note"]["rich_text"][0]["text"]["content"] if props["Note"]["rich_text"] else "",  # Новое поле Note
+            "start_date": props["Start Date"]["date"]["start"],
+            "end_date": props["End Date"]["date"]["start"],
+            "payment_method": props["Payment method"]["select"]["name"] if props["Payment method"]["select"] else None
+        }
+
+        simplified.append(item)
+
+    # 📅 Фильтрация по датам
+    if start_from:
+        simplified = [row for row in simplified if row["start_date"] >= start_from]
+    if end_to:
+        simplified = [row for row in simplified if row["end_date"] <= end_to]
+
+    # 🔍 Фильтрация по ID
+    if match_id:
+        simplified = [row for row in simplified if row["id"] == match_id]
+
+    return simplified
+
+
+def add_row(data: dict):
+    """
+    Добавляет запись в таблицу Notion с обязательными полями и дефолтными значениями для необязательных полей.
+
+    :param data: Данные для добавления в таблицу.
+    :return: Ответ от API Notion.
+    """
+    # Обязательные поля
+    required_fields = ["id", "phone", "start_date", "end_date", "cost"]
+
+    # Проверка на наличие обязательных полей
+    for field in required_fields:
+        if field not in data:
+            print(f"❌ Отсутствует обязательное поле: {field}")
+            return None
+
+    print(data)
+
+    # Заполнение обязательных полей
+    url = "https://api.notion.com/v1/pages"
+    payload = {
+        "parent": {"database_id": DATABASE_ID},
+        "properties": {
+            "User ID": {
+                "title": [{
+                    "text": {"content": data["id"]}
+                }]
+            },
+            "Phone": {"phone_number": data["phone"]},
+            "Start Date": {"date": {"start": data["start_date"]}},
+            "End Date": {"date": {"start": data["end_date"]}},
+            "Cost": {"number": data["cost"]},
+            # Дополнительные поля (с дефолтными значениями)
+            "Kids": {"checkbox": bool(data.get("kids", False))},
+            "Pets": {"checkbox": bool(data.get("pet", False))},
+            "Kupel": {"checkbox": bool(data.get("koupel", False))},
+            "Shooting": {"checkbox": bool(data.get("shooting", False))},
+            "Contact": {
+                "rich_text": [{
+                    "text": {"content": data.get("contact", "unknown")}
+                }]
+            },
+            "Payment method": {
+                "select": {"name": data.get("payment_method", "Other")}
+            },
+            "Num quests": {
+                "select": {"name": str(data.get("num_quests", "1"))}  # По умолчанию "1"
+            }
+        }
+    }
+
+    # Отправка данных
+    response = requests.post(url, headers=NOTION_HEADERS, json=payload)
+    print(response.json())
+    print(response.reason)
+    print(response.status_code)
+    response.raise_for_status()
+    return response.json()
+
+
+# Обновить поле "Payment method" по row_id
+def update_payment_method_by_row_id(row_id: str, new_method: str) -> bool:
+    """
+    Обновляет поле 'Payment method' для записи с указанным row_id.
+
+    :param row_id: ID записи (значение поля 'User ID', а не Notion internal id)
+    :param new_method: Новое значение для поля 'Payment method' (select)
+    :return: True если успешно, False если запись не найдена
+    """
+    # 1. Найдём нужную страницу по row_id
+    url = f"https://api.notion.com/v1/databases/{DATABASE_ID}/query"
+    response = requests.post(url, headers=NOTION_HEADERS)
+    response.raise_for_status()
+    results = response.json().get("results", [])
+
+    page_id_to_update = None
+    for page in results:
+        title_data = page["properties"]["User ID"]["title"]
+        title_text = title_data[0]["text"]["content"] if title_data else ""
+        if title_text == row_id:
+            page_id_to_update = page["id"]
+            break
+
+    if not page_id_to_update:
+        print("❌ Строка с таким row_id не найдена.")
+        return False
+
+    # 2. Обновим поле 'Payment method'
+    update_url = f"https://api.notion.com/v1/pages/{page_id_to_update}"
+    payload = {
+        "properties": {
+            "Payment method": {
+                "select": {"name": new_method}
+            }
+        }
+    }
+
+    update_response = requests.patch(update_url, headers=NOTION_HEADERS, json=payload)
+    update_response.raise_for_status()
+
+    print(f"✅ Строка с row_id '{row_id}' успешно обновлена: способ оплаты → {new_method}")
+    return True
+
+# Обновить поле "Payment method" по ID (User ID)
+def update_payment_method_by_id(user_id: str, new_method: str) -> bool:
+    """
+    Обновляет поле 'Payment method' для записи с указанным User ID.
+
+    :param user_id: ID пользователя (значение поля 'User ID', а не Notion internal id)
+    :param new_method: Новое значение для поля 'Payment method' (select)
+    :return: True если успешно, False если запись не найдена
+    """
+    # 1. Найдём нужную страницу по User ID
+    url = f"https://api.notion.com/v1/databases/{DATABASE_ID}/query"
+    response = requests.post(url, headers=NOTION_HEADERS)
+    response.raise_for_status()
+    results = response.json().get("results", [])
+
+    page_id_to_update = None
+    for page in results:
+        title_data = page["properties"]["User ID"]["title"]
+        title_text = title_data[0]["text"]["content"] if title_data else ""
+        if title_text == user_id:
+            page_id_to_update = page["id"]
+            break
+
+    if not page_id_to_update:
+        print("❌ Строка с таким User ID не найдена.")
+        return False
+
+    # 2. Обновим поле 'Payment method'
+    update_url = f"https://api.notion.com/v1/pages/{page_id_to_update}"
+    payload = {
+        "properties": {
+            "Payment method": {
+                "select": {"name": new_method}
+            }
+        }
+    }
+
+    update_response = requests.patch(update_url, headers=NOTION_HEADERS, json=payload)
+    update_response.raise_for_status()
+
+    print(f"✅ Строка с User ID '{user_id}' успешно обновлена: способ оплаты → {new_method}")
+    return True
