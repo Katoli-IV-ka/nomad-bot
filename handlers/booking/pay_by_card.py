@@ -22,4 +22,4 @@ async def handle_card_payment(callback: types.CallbackQuery, state: FSMContext):
         f"Затычка оплаты"
     )
 
-    await confirm_cash_payment(callback)    
+    await confirm_cash_payment(callback, state)

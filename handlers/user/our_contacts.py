@@ -1,16 +1,20 @@
-from aiogram import Router, types
+from aiogram import Router, types, F
 from aiogram.fsm.context import FSMContext
+
+from keyboards.delete_message import delete_message_kb
 
 router = Router()
 
-@router.message(F.text == "Бронирование")
-async def start_booking(message: types.Message, state: FSMContext):
+@router.callback_query(F.data == "our_contacts")
+async def start_booking(callback: types.CallbackQuery, state: FSMContext):
     await state.clear()
 
     # to_msg
-    await message.answer_photo(
+    await callback.message.answer_photo(
         photo = "AgACAgIAAxkBAAIBwWfrCtuqOQr0YVZFQF3gIa3Fs9IBAAKq9TEb4TZZS2amRIVvjqXmAQADAgADbQADNgQ",
-        caption = "Выберите дату заезда:",
-        reply_markup=generate_calendar()
+        caption = "Наши контакты: \n"
+                  f"inst: {None} \n"
+                  f"связь с менеджером: {None} \n",
+        reply_markup=delete_message_kb()
     )
-    await state.set_state(BookingState.check_in)
+

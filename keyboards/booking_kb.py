@@ -5,14 +5,10 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 import calendar
 from datetime import date
 
-# 🔒 Список забронированных дат (Заменить на реальные данные из БД)
-BOOKED_DATES = {
-    datetime.date(2025, 5, 3): "pm",    # вечер занят → утром можно выехать (☀️)
-    datetime.date(2025, 5, 4): "am",    # утро занят → вечером можно заехать (🌑)
-    datetime.date(2025, 5, 5): "full"   # весь день занят (⛺️)
-}
+from utils.get_booked_dates import get_booking_dates
 
-def generate_calendar(year: int, month: int, check_in=None, check_out=None) -> InlineKeyboardMarkup:
+
+def generate_calendar(year: int, month: int, booked_dates: dict, check_in=None, check_out=None) -> InlineKeyboardMarkup:
 
     builder = InlineKeyboardBuilder()
     month_name = date(year, month, 1).strftime("%B %Y")
@@ -36,7 +32,7 @@ def generate_calendar(year: int, month: int, check_in=None, check_out=None) -> I
         row = []
         for day in week:
             if day == 0:
-                row.append(InlineKeyboardButton(text=" ", callback_data="noop"))
+                row.append(InlineKeyboardButton(text="   ", callback_data="noop"))
                 continue
 
             current_date = date(year, month, day)
@@ -48,8 +44,9 @@ def generate_calendar(year: int, month: int, check_in=None, check_out=None) -> I
                 text = "📍"
                 cb = f"select|{year}|{month}|{day}"
 
-            elif current_date in BOOKED_DATES:
-                status = BOOKED_DATES[current_date]
+            elif current_date in booked_dates:
+
+                status = booked_dates[current_date]
                 if status == "full":
                     text = "🌴"
                     cb = "noop"
@@ -67,7 +64,8 @@ def generate_calendar(year: int, month: int, check_in=None, check_out=None) -> I
         builder.row(*row)
 
     builder.row(
-        InlineKeyboardButton(text="Подтвердить даты", callback_data="confirm")
+        InlineKeyboardButton(text="Назад 🙅🏻", callback_data="delete_message"),
+        InlineKeyboardButton(text="Подтвердить даты 👌🏻", callback_data="confirm"),
     )
 
     return builder.as_markup()

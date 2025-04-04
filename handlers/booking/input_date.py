@@ -2,10 +2,10 @@ import datetime
 from aiogram import Router, types, F
 from aiogram.fsm.context import FSMContext
 
-from keyboards.booking_kb import BOOKED_DATES, generate_calendar
+from keyboards.booking_kb import generate_calendar
 from keyboards.options_package_kb import options_package_keyboard
 from states.booking_states import BookingState
-from utils.mark_booked import mark_booked
+from utils.get_booked_dates import get_booking_dates
 
 router = Router()
 
@@ -18,12 +18,14 @@ async def booking_callback(callback: types.CallbackQuery, state: FSMContext):
 async def start_booking(message: types.Message, state: FSMContext):
     today = datetime.date.today()
     await state.clear()
+    booked_dates = get_booking_dates()
+    await state.update_data(booked_dates=booked_dates)
 
     # to_msg
     await message.answer_photo(
         photo = "AgACAgIAAxkBAAIBwWfrCtuqOQr0YVZFQF3gIa3Fs9IBAAKq9TEb4TZZS2amRIVvjqXmAQADAgADbQADNgQ",
         caption = "Выберите дату заезда:",
-        reply_markup=generate_calendar(today.year, today.month)
+        reply_markup=generate_calendar(year = today.year, month = today.month, booked_dates=booked_dates)
     )
     await state.set_state(BookingState.check_in)
 
@@ -33,18 +35,21 @@ async def start_booking(message: types.Message, state: FSMContext):
 async def select_date(callback: types.CallbackQuery, state: FSMContext):
     from datetime import date, timedelta
 
+    data = await state.get_data()
+    check_in = data.get("check_in")
+    check_out = data.get("check_out")
+    booked_dates = data.get("booked_dates")
+
     _, y, m, d = callback.data.split("|")
     selected = date(int(y), int(m), int(d))
 
     # Проверка: нельзя выбрать день, если он полностью занят
-    status = BOOKED_DATES.get(selected)
+    status = booked_dates.get(selected)
     if status == "full":
         await callback.answer("⛔ Дата полностью забронирована!", show_alert=True)
         return
 
-    data = await state.get_data()
-    check_in = data.get("check_in")
-    check_out = data.get("check_out")
+
 
     # Первая отметка
     if not check_in and not check_out:
@@ -55,7 +60,7 @@ async def select_date(callback: types.CallbackQuery, state: FSMContext):
         # Проверка допустимости диапазона
         for i in range((d2 - d1).days + 1):
             day = d1 + timedelta(days=i)
-            status = BOOKED_DATES.get(day)
+            status = booked_dates.get(day)
             if day == d1 and status in ("pm", "full"):
                 await callback.answer("⛔ Дата заезда недоступна", show_alert=True)
                 return
@@ -76,7 +81,8 @@ async def select_date(callback: types.CallbackQuery, state: FSMContext):
         year=selected.year,
         month=selected.month,
         check_in=new_data.get("check_in"),
-        check_out=new_data.get("check_out")
+        check_out=new_data.get("check_out"),
+        booked_dates=booked_dates
     )
     await callback.message.edit_reply_markup(reply_markup=markup)
     await callback.answer()
@@ -88,9 +94,11 @@ async def switch_month(callback: types.CallbackQuery, state: FSMContext):
     year, month = int(year), int(month)
     data = await state.get_data()
     markup = generate_calendar(
-        year, month,
+        year = year,
+        month = month,
         check_in=data.get("check_in"),
-        check_out=data.get("check_out")
+        check_out=data.get("check_out"),
+        booked_dates=get_booking_dates(),
     )
     await callback.message.edit_reply_markup(reply_markup=markup)
 
@@ -102,6 +110,7 @@ async def confirm_booking(callback: types.CallbackQuery, state: FSMContext):
     data = await state.get_data()
     check_in = data.get("check_in")
     check_out = data.get("check_out")
+    booked_dates = data.get("booked_dates")
 
     # to_msg
     if not check_in or not check_out:
@@ -109,20 +118,21 @@ async def confirm_booking(callback: types.CallbackQuery, state: FSMContext):
         return
 
     # ✅ Обновляем BOOKED_DATES
-    mark_booked(check_in, "pm")  # заезд вечером
-    mark_booked(check_out, "am")  # выезд утром
+    #mark_booked(check_in, "pm")  # заезд вечером
+    #mark_booked(check_out, "am")  # выезд утром
 
     for i in range(1, (check_out - check_in).days):
         day = check_in + timedelta(days=i)
-        BOOKED_DATES[day] = "full"
+        booked_dates[day] = "full"
 
+    # to_msg
     await callback.message.answer(
         f"Бронирование подтверждено с {check_in} по {check_out}"
     )
     await callback.message.delete()
 
 
-# Это уже choice options
+    # Это уже choice options
     await state.set_state(BookingState.options_package_selection)
     await state.update_data(
         package_options = {

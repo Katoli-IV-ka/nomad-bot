@@ -66,7 +66,7 @@ def add_row(data: dict):
     :return: Ответ от API Notion.
     """
     # Обязательные поля
-    required_fields = ["id", "phone", "start_date", "end_date", "cost"]
+    required_fields = ["id", "phone", "start_date", "end_date"]
 
     # Проверка на наличие обязательных полей
     for field in required_fields:
@@ -74,7 +74,7 @@ def add_row(data: dict):
             print(f"❌ Отсутствует обязательное поле: {field}")
             return None
 
-    print(data)
+
 
     # Заполнение обязательных полей
     url = "https://api.notion.com/v1/pages"
@@ -89,8 +89,8 @@ def add_row(data: dict):
             "Phone": {"phone_number": data["phone"]},
             "Start Date": {"date": {"start": data["start_date"]}},
             "End Date": {"date": {"start": data["end_date"]}},
-            "Cost": {"number": data["cost"]},
             # Дополнительные поля (с дефолтными значениями)
+            "Cost": {"number": data.get("cost", 0)},
             "Kids": {"checkbox": bool(data.get("kids", False))},
             "Pets": {"checkbox": bool(data.get("pet", False))},
             "Kupel": {"checkbox": bool(data.get("koupel", False))},
@@ -101,7 +101,7 @@ def add_row(data: dict):
                 }]
             },
             "Payment method": {
-                "select": {"name": data.get("payment_method", "Other")}
+                "select": {"name": data.get("payment_method", "Waiting")}
             },
             "Num quests": {
                 "select": {"name": str(data.get("num_quests", "1"))}  # По умолчанию "1"
@@ -111,15 +111,46 @@ def add_row(data: dict):
 
     # Отправка данных
     response = requests.post(url, headers=NOTION_HEADERS, json=payload)
-    print(response.json())
-    print(response.reason)
-    print(response.status_code)
     response.raise_for_status()
     return response.json()
 
 
+def update_payment_method_by_page_id(page_id: str, new_method: str) -> bool:
+    """
+    Обновляет поле 'Payment method' для записи с указанным Notion page ID.
+
+    :param page_id: ID страницы Notion (внутренний ID страницы, например, "1cbfa05a-c45f-818c-8051-cf434ddf5996")
+    :param new_method: Новое значение для поля 'Payment method' (select)
+    :return: True если успешно, False если запись не найдена
+    """
+    # Структура запроса для обновления страницы
+    update_url = f"https://api.notion.com/v1/pages/{page_id}"
+    payload = {
+        "properties": {
+            "Payment method": {
+                "select": {"name": new_method}
+            }
+        }
+    }
+
+    try:
+        # Отправляем запрос на обновление
+        response = requests.patch(update_url, headers=NOTION_HEADERS, json=payload)
+        response.raise_for_status()  # Проверка на ошибки HTTP
+
+        print(f"✅ Строка с page_id '{page_id}' успешно обновлена: способ оплаты → {new_method}")
+        return True
+    except requests.exceptions.HTTPError as http_err:
+        print(f"❌ HTTP error occurred: {http_err}")
+        print("Ошибка в запросе:", response.text)  # Ответ от API с ошибкой
+    except Exception as err:
+        print(f"❌ Other error occurred: {err}")
+
+    return False
+
 # Обновить поле "Payment method" по row_id
 def update_payment_method_by_row_id(row_id: str, new_method: str) -> bool:
+
     """
     Обновляет поле 'Payment method' для записи с указанным row_id.
 
