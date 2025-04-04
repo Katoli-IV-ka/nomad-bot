@@ -3,7 +3,7 @@ import datetime
 from database.notion_connect import get_clean_rows
 
 
-def get_booking_dates():
+async def get_booking_dates():
     bookings = get_clean_rows()
 
     # Получаем текущую дату и месяц

@@ -18,7 +18,7 @@ async def booking_callback(callback: types.CallbackQuery, state: FSMContext):
 async def start_booking(message: types.Message, state: FSMContext):
     today = datetime.date.today()
     await state.clear()
-    booked_dates = get_booking_dates()
+    booked_dates = await get_booking_dates()
     await state.update_data(booked_dates=booked_dates)
 
     # to_msg
@@ -98,7 +98,7 @@ async def switch_month(callback: types.CallbackQuery, state: FSMContext):
         month = month,
         check_in=data.get("check_in"),
         check_out=data.get("check_out"),
-        booked_dates=get_booking_dates(),
+        booked_dates=await get_booking_dates(),
     )
     await callback.message.edit_reply_markup(reply_markup=markup)
 

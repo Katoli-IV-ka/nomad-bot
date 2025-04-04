@@ -32,7 +32,11 @@ async def receive_contact(message: types.Message, state: FSMContext):
 
     # to_msg
     await message.answer(
-        text = f"Спасибо! Контакт сохранён.\n{contact.first_name}\n{contact.phone_number}",
+        text = f"Отлично, данные получены:\n"
+               f"👤 {contact.first_name + ' '  + message.from_user.last_name if message.from_user.last_name else ''}\n"
+               f"☎️ {contact.phone_number}\n"
+               f"\n"
+               f"Шаг 3/5 🚶🏻",
         #reply_markup = reply_menu_keyboard()
     )
 
@@ -114,7 +118,6 @@ async def receive_shooting_contact(message: types.Message, state: FSMContext):
         "contact": str(contact_data["first_name"]),
         'shooting': True,
     })
-
 
 
     # to_msg
