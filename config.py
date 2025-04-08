@@ -1,2 +1,7 @@
-BOT_TOKEN='7805690196:AAGvZEQYvA0-sHPWI60ay54V3JDz_rZD4zQ'
+import os
 
+from dotenv import load_dotenv
+
+load_dotenv()
+BOT_TOKEN = str(os.getenv("BOT_TOKEN"))
+DEV_TELEGRAM_USER_ID = str(os.getenv("DEV_TELEGRAM_USER_ID"))

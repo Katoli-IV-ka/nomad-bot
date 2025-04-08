@@ -4,8 +4,7 @@ from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
 
 
-from config import BOT_TOKEN
-
+from config import BOT_TOKEN, DEV_TELEGRAM_USER_ID
 
 # Инициализация бота
 bot = Bot(token=BOT_TOKEN)
@@ -26,7 +25,7 @@ async def main():
 
     #трекинг бота
     await bot.send_message(
-        chat_id="7895383475",
+        chat_id=DEV_TELEGRAM_USER_ID,
         text="Bot is running..."
     )
     await dp.start_polling(bot)
