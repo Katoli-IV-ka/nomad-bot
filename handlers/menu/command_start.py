@@ -6,6 +6,7 @@ from contents.menu.menu_contents import menu_photo, menu_keyboard, menu_text
 
 router = Router()
 
+@router.message(Command('menu'))
 @router.message(Command('start'))
 async def admin_get_message_cmd(message: Message):
     await message.answer_photo(
