@@ -1,18 +1,24 @@
 from aiogram import Router, types, F
+from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
+from aiogram.types import Message
 
 from contents.delete_message_kb import delete_message_kb
 from contents.menu.our_contacts_contents import our_contacts_text, our_contacts_photo
 
 router = Router()
 
+@router.message(Command('contact'))
 @router.callback_query(F.data == "our_contacts")
-async def start_booking(callback: types.CallbackQuery, state: FSMContext):
+async def start_booking(message: Message = None, callback: types.CallbackQuery = None, state: FSMContext = None):
+    if callback:
+        message = callback.message
+
     await state.clear()
 
-    await callback.message.answer_photo(
+    await message.answer_photo(
         photo = our_contacts_photo,
         caption = our_contacts_text,
-        reply_markup=delete_message_kb()
+        reply_markup=delete_message_kb(text="Назад")
     )
 

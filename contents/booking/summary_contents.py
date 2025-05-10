@@ -60,8 +60,8 @@ def get_summary_keyboard() -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
 
     builder.button(text="☀️ Подтвердить бронирование", callback_data="accept_summary")
-    builder.button(text="🔙 Назад", callback_data="to_options")
-    builder.button(text="🚫 Отмена", callback_data="cancel_booking")
+    builder.button(text="Назад", callback_data="to_options")
+    builder.button(text="Отмена", callback_data="cancel_booking")
     builder.adjust(1,2)
 
     return builder.as_markup()
