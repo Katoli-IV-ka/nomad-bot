@@ -1,5 +1,6 @@
 from aiogram import Router, F
 from aiogram.filters import Command
+from aiogram.fsm.context import FSMContext
 
 from aiogram.types import CallbackQuery, InputMediaPhoto, Message
 
@@ -13,8 +14,9 @@ async def wrapper(message: Message = None):
     await about_us(message=message)
 
 @router.callback_query(F.data == "about_us")
-async def about_us(message: Message = None, callback: CallbackQuery = None):
+async def about_us(callback: CallbackQuery = None, message: Message = None, state: FSMContext = None):
     global photo_index
+
     if callback:
         message = callback.message
 

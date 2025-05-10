@@ -10,7 +10,7 @@ router = Router()
 async def wrapper(message: Message = None):
     await menu_cmd(message=message)
 
-@router.message(Command('start'))
+@router.message(Command('start') or Command('menu'))
 async def menu_cmd(message: Message):
     await message.answer_photo(
         photo=menu_photo,

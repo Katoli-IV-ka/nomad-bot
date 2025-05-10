@@ -13,7 +13,7 @@ async def wrapper(message: Message = None, state: FSMContext = None):
     await start_booking(message=message,  state=state)
 
 @router.callback_query(F.data == "our_contacts")
-async def start_booking(message: Message = None, callback: types.CallbackQuery = None, state: FSMContext = None):
+async def start_booking(callback: types.CallbackQuery = None, message: Message = None, state: FSMContext = None):
     if callback:
         message = callback.message
 

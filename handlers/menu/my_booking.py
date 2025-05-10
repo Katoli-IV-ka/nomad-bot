@@ -10,11 +10,11 @@ from contents.menu.my_bookings_contetns import format_bookings_overview, my_book
 router = Router()
 
 @router.message(Command('my'))
-async def wrapper(message: Message = None, state: FSMContext = None):
-    await my_bookings(message=message,  state=state)
+async def wrapper(message: Message = None):
+    await my_bookings(message=message)
 
 @router.callback_query(F.data == "my_booking")
-async def my_bookings(message: Message = None, callback: types.CallbackQuery = None):
+async def my_bookings(callback: types.CallbackQuery = None, message: Message = None):
     if callback:
         message = callback.message
 

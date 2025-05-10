@@ -1,6 +1,6 @@
-from aiogram import types, F, Router
+from aiogram import F, Router
 from aiogram.fsm.context import FSMContext
-from aiogram.types import Message
+from aiogram.types import Message, CallbackQuery
 
 from contents.booking.input_date_contents import input_date_photo, input_date_text, input_date_keyboard
 from states.booking_states import BookingState
@@ -8,7 +8,7 @@ from states.booking_states import BookingState
 router = Router()
 
 @router.callback_query(F.data.startswith("to_select_date"))
-async def to_select_date(message: Message = None, callback: types.CallbackQuery = None, state: FSMContext = None):
+async def to_select_date(message: Message = None, callback: CallbackQuery = None, state: FSMContext = None):
     if callback:
         message = callback.message
 
