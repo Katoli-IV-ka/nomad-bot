@@ -9,6 +9,9 @@ from contents.menu.our_contacts_contents import our_contacts_text, our_contacts_
 router = Router()
 
 @router.message(Command('contact'))
+async def wrapper(message: Message = None, state: FSMContext = None):
+    await start_booking(message=message,  state=state)
+
 @router.callback_query(F.data == "our_contacts")
 async def start_booking(message: Message = None, callback: types.CallbackQuery = None, state: FSMContext = None):
     if callback:

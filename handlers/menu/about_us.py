@@ -9,8 +9,11 @@ router = Router()
 photo_index = 0
 
 @router.message(Command('nomad'))
+async def wrapper(message: Message = None):
+    await about_us(message=message)
+
 @router.callback_query(F.data == "about_us")
-async def on_callback_query(message: Message = None, callback: CallbackQuery = None):
+async def about_us(message: Message = None, callback: CallbackQuery = None):
     global photo_index
     if callback:
         message = callback.message

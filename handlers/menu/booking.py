@@ -9,6 +9,9 @@ from utils.get_booked_dates import get_booking_dates
 router = Router()
 
 @router.message(Command('booking'))
+async def wrapper(message: Message = None, state: FSMContext = None):
+    await booking_callback(message=message,  state=state)
+
 @router.callback_query(F.data == "booking")
 async def booking_callback(message: Message = None, callback: types.CallbackQuery = None, state: FSMContext = None):
     await state.clear()

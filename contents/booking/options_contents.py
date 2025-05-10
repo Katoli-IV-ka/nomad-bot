@@ -43,7 +43,7 @@ def get_options_keyboard(data: dict = {}) -> InlineKeyboardMarkup:
     keyboard.button(**mark("koupel", "Добавить купель"))
 
     # Кнопка продолжения
-    keyboard.button(text="Назад", callback_data="to_select_date")
+    keyboard.button(text="Назад", callback_data="booking")
     keyboard.button(text="Продолжить", callback_data="accept_options")
 
     keyboard.adjust(2, 2, 1, 2)
