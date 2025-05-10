@@ -1,7 +1,25 @@
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
 
+from handlers.notification.notify_client import notify_client
+from handlers.notification.notify_staff import notify_staff
+
 scheduler = AsyncIOScheduler()
+
+
+async def notify():
+    await notify_client()
+    await notify_staff()
+
+scheduler.add_job(
+    func=notify,
+    trigger=CronTrigger.from_crontab("*/5 * * * * ")
+)
+
+scheduler.add_job(
+    func=notify_client,
+    trigger=CronTrigger.from_crontab("0 7 * * *") # 0 7 * * * ||  44 6 * * 2
+)
 
 
 
