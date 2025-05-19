@@ -4,7 +4,7 @@ from typing import List, Dict
 from aiogram.types import InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-my_bookings_photo = "AgACAgIAAxkBAAIBwWfrCtuqOQr0YVZFQF3gIa3Fs9IBAAKq9TEb4TZZS2amRIVvjqXmAQADAgADbQADNgQ"
+my_bookings_photo = "AgACAgIAAxkBAAINIWgrgfyz0qQaVjVA2ZHUMN8xuJ7aAAKi6jEbiftgSZpI9sLiC2SXAQADAgADcwADNgQ"
 
 def format_bookings_overview(bookings: List[Dict]) -> str:
     """

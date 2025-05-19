@@ -22,6 +22,7 @@ async def start_booking(callback: types.CallbackQuery = None, message: Message =
     await message.answer_photo(
         photo = our_contacts_photo,
         caption = our_contacts_text,
-        reply_markup=delete_message_kb(text="Назад")
+        reply_markup=delete_message_kb(text="Назад"),
+        parse_mode='HTML'
     )
 

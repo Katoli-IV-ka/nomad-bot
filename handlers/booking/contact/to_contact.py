@@ -2,9 +2,8 @@ from aiogram import types, Router, F
 from aiogram.fsm.context import FSMContext
 from aiogram.types import InputMediaPhoto
 
-from contents.booking.keyboard_to_options import to_options_kb
-from contents.booking.options_contents import get_options_text
-from contents.booking.keyboard_share_contact import share_contact_keyboard
+from contents.booking.options_contents import get_options_text, to_options_kb
+from contents.booking.share_contact_contents import share_contact_keyboard, share_contact_photo
 from states.booking_states import BookingState
 
 router = Router()
@@ -18,7 +17,7 @@ async def to_contact(state: FSMContext, callback: types.CallbackQuery = None):
     # to_msg
     await process_message.edit_media(
         media = InputMediaPhoto(
-            media = "AgACAgIAAxkBAAIBxWfrCu_-GGwWDFMrS_SiRH3tIY0TAAKs9TEb4TZZS3mMFih9kwuEAQADAgADcwADNgQ",
+            media = share_contact_photo,
             caption = get_options_text(package_options),
         ),
         reply_markup = await to_options_kb()

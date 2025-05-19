@@ -3,7 +3,7 @@ from datetime import timedelta
 from aiogram.types import InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-booking_confirmation_photo = "AgACAgIAAxkBAAIBwWfrCtuqOQr0YVZFQF3gIa3Fs9IBAAKq9TEb4TZZS2amRIVvjqXmAQADAgADbQADNgQ"
+booking_confirmation_photo = "AgACAgIAAxkBAAINSmgrki7oFHM9g47mUpDZPwPK1o3BAALp8DEbgJJYSc0rmjVuWlPyAQADAgADcwADNgQ"
 
 def booking_confirmation_text(check_in, check_out, package: dict,
                          contact_name: str, phone_number: str, username: str | None,

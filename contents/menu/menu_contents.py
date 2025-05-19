@@ -1,7 +1,7 @@
 from aiogram.types import InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-menu_photo = "AgACAgIAAxkBAAIBy2frCwgummI8aLSuDkAhkFsxp94hAAKv9TEb4TZZS2ezt3UE4RvuAQADAgADcwADNgQ"
+menu_photo = "AgACAgIAAxkBAAINKWgrgpLYcRxPZzIsqisPYD02kj-eAAKn6jEbiftgSRV0nm_tWZKOAQADAgADcwADNgQ"
 
 menu_text = str(
     f"<b>Nomad cabin</b>\n"
@@ -17,8 +17,8 @@ def menu_keyboard() -> InlineKeyboardMarkup:
     keyboard = InlineKeyboardBuilder()
 
     keyboard.button(text="Бронирование", callback_data="booking")
-    keyboard.button(text="Информация о доме", callback_data="about_us")
-    keyboard.button(text="Мои бронирования", callback_data="my_booking")
+    keyboard.button(text="О доме", callback_data="about_us")
+    keyboard.button(text="Моя бронь", callback_data="my_booking")
     keyboard.button(text="Наши контакты", callback_data="our_contacts")
 
     keyboard.adjust(2)

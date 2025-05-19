@@ -3,10 +3,8 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 
 about_us_photos = [
-        "AgACAgIAAxkBAAIE0WfuYMW5pJ20R350bRorXUKqwhB-AALH7TEbx1xwS-V8HcyauMHIAQADAgADcwADNgQ",
-        "AgACAgIAAxkBAAIE1GfuYOiJ2hx1hw3PlMc0cg1A96YKAALJ7TEbx1xwS1OP0ttivFybAQADAgADcwADNgQ",
-        "AgACAgIAAxkBAAIE1mfuYS5K1p7VrlRY_War9YHOhAEkAALK7TEbx1xwSxpbNWjKt4PiAQADAgADcwADNgQ",
-        "AgACAgIAAxkBAAIE2GfuYVayvWocZMewtFRLi_evJcOpAALM7TEbx1xwS6y2GI71c-iVAQADAgADcwADNgQ"
+        "AgACAgIAAxkBAAINK2grgqJsq2sAAUu6cnG97UiXNSJiUQACD_gxG_uJYUlZlMriOwABwA0BAAMCAANzAAM2BA",
+        "AgACAgIAAxkBAAINLWgrgrI1f0-MZLiBtpTPiaWjehvEAAKp6jEbiftgSVy3cBAw7CCPAQADAgADcwADNgQ",
 ]
 
 async def about_us_kb(photo_index=0) -> InlineKeyboardMarkup:

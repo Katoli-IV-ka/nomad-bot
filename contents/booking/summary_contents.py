@@ -4,9 +4,9 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.types import InlineKeyboardMarkup
 
 
-summary_photo = "AgACAgIAAxkBAAIByWfrCv-oNYvy842u29I6r1GG6etVAAKu9TEb4TZZS7UhzXPay0zqAQADAgADcwADNgQ"
+summary_photo = "AgACAgIAAxkBAAINL2grgtP0Y5D2n-PSd5RiO-CETsFVAAIR-DEb-4lhSTdw3SfYA3EIAQADAgADcwADNgQ"
 
-accept_summary_photo = "AgACAgIAAxkBAAIBw2frCujhFPLA8Xe2f_hL-ntRO2nJAAKr9TEb4TZZSy0fEuO6tM0qAQADAgADcwADNgQ"
+accept_summary_photo = "AgACAgIAAxkBAAINMWgrgt1dRrUeG2Xe6TmzZx85NNKsAAKq6jEbiftgSfubM83rMelCAQADAgADcwADNgQ"
 
 
 accept_summary_text = str(

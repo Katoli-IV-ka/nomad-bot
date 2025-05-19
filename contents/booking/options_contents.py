@@ -1,7 +1,7 @@
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.types import InlineKeyboardMarkup
 
-options_photo = ""
+options_photo = "AgACAgIAAxkBAAINM2grguoSMkq0s-5Jpp7XU0cU4kawAAKr6jEbiftgScKha4D6JusFAQADAgADcwADNgQ"
 
 def get_options_text(package: dict) -> str:
     text = "Вы выбрали:\n"
@@ -49,3 +49,8 @@ def get_options_keyboard(data: dict = {}) -> InlineKeyboardMarkup:
     keyboard.adjust(2, 2, 1, 2)
     return keyboard.as_markup()
 
+
+async def to_options_kb() -> InlineKeyboardMarkup:
+    keyboard = InlineKeyboardBuilder()
+    keyboard.button(text="Назад", callback_data="to_options")
+    return keyboard.as_markup()

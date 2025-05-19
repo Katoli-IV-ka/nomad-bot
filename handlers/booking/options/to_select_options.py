@@ -2,7 +2,7 @@ from aiogram import Router, F
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, InputMediaPhoto
 
-from contents.booking.options_contents import get_options_keyboard
+from contents.booking.options_contents import get_options_keyboard, options_photo
 from states.booking_states import BookingState
 
 router = Router()
@@ -18,7 +18,7 @@ async def to_select_options(callback:CallbackQuery = None, state: FSMContext = N
     #to_msg
     await process_message.edit_media(
         media=InputMediaPhoto(
-            media="AgACAgIAAxkBAAIBw2frCujhFPLA8Xe2f_hL-ntRO2nJAAKr9TEb4TZZSy0fEuO6tM0qAQADAgADcwADNgQ",
+            media=options_photo,
             caption="Выберите условия проживания:",
             parse_mode="Markdown",
         ),

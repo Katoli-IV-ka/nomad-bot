@@ -5,7 +5,7 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 import calendar
 from datetime import date
 
-input_date_photo = "AgACAgIAAxkBAAIBwWfrCtuqOQr0YVZFQF3gIa3Fs9IBAAKq9TEb4TZZS2amRIVvjqXmAQADAgADbQADNgQ"
+input_date_photo = "AgACAgIAAxkBAAINJ2grgnqe3UTaYZaurvGeXavEQLEbAAKl6jEbiftgSQ38ymU6m4XvAQADAgADcwADNgQ"
 
 input_date_text = str(
     f"вы можете выбрать любую свободную дату в календаре\n"
