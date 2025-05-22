@@ -21,7 +21,7 @@ def menu_keyboard() -> InlineKeyboardMarkup:
     keyboard.button(text="Моя бронь", callback_data="my_booking")
     keyboard.button(text="Наши контакты", callback_data="our_contacts")
 
-    keyboard.adjust(2)
+    keyboard.adjust(2,2)
 
     return keyboard.as_markup()
 

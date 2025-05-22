@@ -31,7 +31,6 @@ async def to_summary(state: FSMContext, callback: types.CallbackQuery = None):
     telegram_user_id = data.get("telegram_user_id")
     username = data.get("username")
 
-    # Сохранение данных в notion таблицу
     total = calculate_booking_price(check_in, check_out, package)
 
     await process_message.edit_media(
@@ -58,6 +57,7 @@ async def to_summary(state: FSMContext, callback: types.CallbackQuery = None):
         'pet': package['pet'],
         'koupel': package['koupel'],
         'num_quests': '1' if package['one_person'] is True else '2',
+        'verify': 'Incomplete application',
     })
 
     await state.update_data(notion_page_id=response["id"])

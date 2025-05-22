@@ -16,7 +16,7 @@ def format_bookings_overview(bookings: List[Dict]) -> str:
     :return: Строка с сообщением
     """
     # Заголовок
-    msg_lines = ["Ваши бронирования:", ""]
+    msg_lines = ["<b>Ваши бронирования:</b>", ""]
 
     # Проходим по первым четырём записям (или меньше, если их меньше)
     for b in bookings[:4]:

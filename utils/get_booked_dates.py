@@ -4,8 +4,15 @@ from database.notion_connect import get_clean_rows
 import datetime
 
 async def get_booking_dates():
-    allowed = ["Paid by card", "Paid by cash", "Other"]
-    bookings = get_clean_rows(payment_methods=allowed)
+    allowed_status = [
+        'Waiting visit',
+        'Up-to-date booking',
+        'Completed booking',
+        'On verification',
+        'Waiting payment'
+    ]
+
+    bookings = get_clean_rows(status=allowed_status)
 
     # Получаем текущую дату, месяц и год
     today = datetime.date.today()

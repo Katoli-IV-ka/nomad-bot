@@ -1,7 +1,7 @@
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.types import InlineKeyboardMarkup
 
-options_photo = "AgACAgIAAxkBAAINM2grguoSMkq0s-5Jpp7XU0cU4kawAAKr6jEbiftgScKha4D6JusFAQADAgADcwADNgQ"
+options_photo = "AgACAgIAAxkBAAIOL2guXZn6_d_npOwoYdhhFooAAZvzEQAD6TEbQ255SYCaRv7znI_OAQADAgADcwADNgQ"
 
 def get_options_text(package: dict) -> str:
     text = "Вы выбрали:\n"
@@ -43,7 +43,7 @@ def get_options_keyboard(data: dict = {}) -> InlineKeyboardMarkup:
     keyboard.button(**mark("koupel", "Добавить купель"))
 
     # Кнопка продолжения
-    keyboard.button(text="Назад", callback_data="booking")
+    keyboard.button(text="Назад", callback_data="back_to_booking")
     keyboard.button(text="Продолжить", callback_data="accept_options")
 
     keyboard.adjust(2, 2, 1, 2)

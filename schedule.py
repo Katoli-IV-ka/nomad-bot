@@ -8,12 +8,13 @@ scheduler = AsyncIOScheduler()
 
 
 async def notify():
-    await notify_client()
+
     await notify_staff()
+    await notify_client()
 
 scheduler.add_job(
     func=notify,
-    trigger=CronTrigger.from_crontab("0 7 * * *")
+    trigger=CronTrigger.from_crontab("* * * * *") #"0 7 * * *"
 )
 
 

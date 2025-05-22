@@ -11,7 +11,7 @@ async def confirm_booking(callback: types.CallbackQuery, state: FSMContext):
 
     update_verification_by_page_id(
         page_id=notion_page_id,
-        new_status="Reject"
+        new_status="Booking rejection"
     )
 
     await callback.answer("🚫 Бронирование отклонено")

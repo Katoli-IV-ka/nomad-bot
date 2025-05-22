@@ -4,7 +4,8 @@ from aiogram import F, Router, types
 from aiogram.fsm.context import FSMContext
 
 from contents.verification.payment_confirm_contetnts import confirm_payment_keyboard
-from database.notion_connect import update_verification_by_page_id, check_payment_status
+from database.notion_connect import update_verification_by_page_id, check_payment_status, \
+    update_payment_method_by_page_id
 from handlers.verification.utils import check_payment
 from schedule import scheduler
 
@@ -16,8 +17,9 @@ async def wait_payment(callback: types.CallbackQuery, state: FSMContext):
 
     update_verification_by_page_id(
         page_id=notion_page_id,
-        new_status="Confirm"
+        new_status="Waiting payment"
     )
+
 
     await callback.answer("💳 Бронирование ожидает оплаты")
 
