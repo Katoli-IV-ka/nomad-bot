@@ -40,20 +40,21 @@ def get_summary_text(check_in, check_out, package: dict,
     user = f"\n@{username}" if username else ""
 
     return (
-        f"📆 *Выбранные даты:*\n"
+        f"<b>📆 Выбранные даты:</b>\n"
         f"Заселение: {check_in_text}\n"
         f"Выселение:  {check_out_text}\n\n"
 
-        f"🛍 *Пакет услуг:*\n"
+        f"<b>🛍 Пакет услуг:</b>\n"
         f"{days} {'день' if days == 1 else 'дня' if days < 5 else 'дней'} {base}{kupel} \n"
         f"{child}\n"
         f"{pet}\n\n"
 
-        f"👤 *Контактные данные:*\n"
+        f"<b>👤 Контактные данные:</b>\n"
         f"{contact_name}\n{phone_number}{user}\n\n"
 
-        f"💳 *Сумма к оплате:* {total}р."
+        f"<b>💳 Сумма к оплате:</b> {total}р."
     )
+
 
 
 def get_summary_keyboard() -> InlineKeyboardMarkup:

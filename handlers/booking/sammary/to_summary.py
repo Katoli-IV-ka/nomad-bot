@@ -41,7 +41,7 @@ async def to_summary(state: FSMContext, callback: types.CallbackQuery = None):
                         contact_name=contact_name, phone_number=phone_number, username=username,
                         total=total
             ),
-            parse_mode="Markdown",
+            parse_mode="HTML",
         ),
         reply_markup=get_summary_keyboard()
     )
