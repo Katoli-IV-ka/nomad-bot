@@ -5,9 +5,11 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 import calendar
 from datetime import date
 
-input_date_photo = "AgACAgIAAxkBAAINJ2grgnqe3UTaYZaurvGeXavEQLEbAAKl6jEbiftgSQ38ymU6m4XvAQADAgADcwADNgQ"
+input_date_photo = "AgACAgIAAxkBAAIOK2guXUVtTltQfW-TeTi8XuVbCKgNAALX9zEbucFwSUYezGwOhb15AQADAgADcwADNgQ"
 
-input_date_text = str(
+input_date_text = None
+
+str(
     f"вы можете выбрать любую свободную дату в календаре\n"
     f"🔐 — даты с замочком уже забронированы другими гостями\n"
     f"\n"

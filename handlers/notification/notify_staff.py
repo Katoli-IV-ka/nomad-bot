@@ -4,6 +4,7 @@ from aiogram.types import Message
 
 from config import STAFF_TELEGRAM_ID
 from contents.notification.staff_notification_contents import staff_notification_text
+from database.notion_connect import update_status_by_uniq_id
 from handlers.notification.utils import get_tomorrow_bookings, get_ending_bookings
 from main import bot as _bot
 
@@ -25,6 +26,11 @@ async def notify_staff(message: Message = None, bot: Bot = _bot):
                 chat_id=STAFF_TELEGRAM_ID,
                 text=await staff_notification_text(before_booking=True),
                 parse_mode="HTML",
+            )
+
+            update_status_by_uniq_id(
+                uniq_id=tomorrow_ending_bookings[0]["uniq_id"],
+                new_status="Completed booking"
             )
 
     if message:

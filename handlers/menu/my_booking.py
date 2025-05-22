@@ -22,7 +22,7 @@ async def my_bookings(callback: types.CallbackQuery = None, message: Message = N
 
     user_bookings = get_pages_by_user_id(
         user_id=user_id,
-        payment_methods = ["Paid by card", "Paid by cash", "Other"]
+        allowed_status= ["Completed booking", "Up-to-date booking", "Waiting visit"]
     )
 
     if user_bookings:
@@ -30,13 +30,15 @@ async def my_bookings(callback: types.CallbackQuery = None, message: Message = N
         await message.answer_photo(
             photo=my_bookings_photo,
             caption=format_bookings_overview(user_bookings),
-            reply_markup=delete_message_kb("Назад")
+            reply_markup=delete_message_kb("Назад"),
+            parse_mode='HTML'
         )
     else:
         # to_msg
         await message.answer_photo(
             photo=my_bookings_photo,
             caption=f"У вас нет активных броней, хотите забронировать?",
-            reply_markup=get_to_booking_keyboard()
+            reply_markup=get_to_booking_keyboard(),
+            parse_mode='HTML'
         )
 

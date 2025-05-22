@@ -6,13 +6,15 @@ from database.notion_connect import get_clean_rows, get_bookings_ending_on, get_
 
 def get_tomorrow_bookings() -> list[dict]:
     tomorrow = (date.today() + timedelta(days=1)).isoformat()
-    allowed = ["Paid by card", "Paid by cash", "Other"]
-    return get_bookings_start_on(start_on=tomorrow, payment_methods=allowed)
+    allowed = ["By card", "Payment in Cash", "Other"]
+    status = ['Waiting visit']
+    return get_bookings_start_on(start_on=tomorrow, payment_methods=allowed, status=status)
 
 def get_ending_bookings() -> list[dict]:
     tomorrow = (date.today() + timedelta(days=1)).isoformat()
-    allowed = ["Paid by card", "Paid by cash", "Other"]
-    return get_bookings_ending_on(end_on=tomorrow, payment_methods=allowed)
+    allowed = ["By card", "Payment in Cash", "Other"]
+    status = ['Up-to-date booking']
+    return get_bookings_ending_on(end_on=tomorrow, payment_methods=allowed, status=status)
 
 async def get_next_booking_start_date() -> datetime.date | None:
     bookings = get_clean_rows()

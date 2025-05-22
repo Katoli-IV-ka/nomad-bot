@@ -15,7 +15,8 @@ NOTION_HEADERS = {
 }
 
 def get_bookings_ending_on(end_on: str,
-                           payment_methods: List[str] = None) -> list[dict]:
+                           payment_methods: List[str] = None,
+                           status: List[str] = None) -> list[dict]:
     """
     Вернёт упрощённые строки, у которых End Date == end_on (YYYY-MM-DD).
     """
@@ -42,7 +43,6 @@ def get_bookings_ending_on(end_on: str,
             "kids": props["Kids"]["checkbox"],
             "pets": props["Pets"]["checkbox"],
             "koupel": props["Kupel"]["checkbox"],
-            "shooting": props.get("Shooting", {}).get("checkbox", False),
             "phone": props["Phone"]["phone_number"],
             "contact": props["Contact"]["rich_text"][0]["text"]["content"]
             if props["Contact"]["rich_text"] else "",
@@ -51,20 +51,26 @@ def get_bookings_ending_on(end_on: str,
             "start_date": props["Start Date"]["date"]["start"],
             "end_date": props["End Date"]["date"]["start"],
             "payment": props["Payment method"]["select"]["name"]
-            if props["Payment method"]["select"] else None,
+                if props["Payment method"]["select"] else None,
+            "status": props["Booking status"]["select"]["name"]
+                if props["Booking status"]["select"] else None,
             "num_quests": props["Num quests"]["select"]["name"]
-            if props["Num quests"]["select"] else None,
+                if props["Num quests"]["select"] else None,
+            "uniq_id": props['ID']["unique_id"]["number"]
         }
         simplified.append(item)
 
         if payment_methods:
             simplified = [r for r in simplified if r["payment"] in payment_methods]
+        if status:
+            simplified = [r for r in simplified if r["status"] in status]
 
     return simplified
 
 
 def get_bookings_start_on(start_on: str,
-                           payment_methods: List[str] = None) -> list[dict]:
+                          payment_methods: List[str] = None,
+                          status: List[str] = None) -> list[dict]:
     """
     Вернёт упрощённые строки, у которых End Date == end_on (YYYY-MM-DD).
     """
@@ -91,7 +97,6 @@ def get_bookings_start_on(start_on: str,
             "kids": props["Kids"]["checkbox"],
             "pets": props["Pets"]["checkbox"],
             "koupel": props["Kupel"]["checkbox"],
-            "shooting": props.get("Shooting", {}).get("checkbox", False),
             "phone": props["Phone"]["phone_number"],
             "contact": props["Contact"]["rich_text"][0]["text"]["content"]
             if props["Contact"]["rich_text"] else "",
@@ -100,14 +105,20 @@ def get_bookings_start_on(start_on: str,
             "start_date": props["Start Date"]["date"]["start"],
             "end_date": props["End Date"]["date"]["start"],
             "payment": props["Payment method"]["select"]["name"]
-            if props["Payment method"]["select"] else None,
+                        if props["Payment method"]["select"] else None,
+            "status": props["Booking status"]["select"]["name"]
+                        if props["Booking status"]["select"] else None,
             "num_quests": props["Num quests"]["select"]["name"]
-            if props["Num quests"]["select"] else None,
+                if props["Num quests"]["select"] else None,
+            "uniq_id": props['ID']["unique_id"]["number"],
+
         }
         simplified.append(item)
 
         if payment_methods:
             simplified = [r for r in simplified if r["payment"] in payment_methods]
+        if status:
+            simplified = [r for r in simplified if r["status"] in status]
 
 
     return simplified
@@ -116,7 +127,8 @@ def get_bookings_start_on(start_on: str,
 def get_clean_rows(start_from: str = None,
                    end_to: str = None,
                    match_id: str = None,
-                   payment_methods: List[str] = None) -> List[Dict]:
+                   payment_methods: List[str] = None,
+                   status: List[str] = None,) -> List[Dict]:
     """
     Получает упрощённые записи из Notion и фильтрует по дате, ID и списку способов оплаты.
 
@@ -141,7 +153,6 @@ def get_clean_rows(start_from: str = None,
             "kids": props["Kids"]["checkbox"],
             "pets": props["Pets"]["checkbox"],
             "koupel": props["Kupel"]["checkbox"],
-            "shooting": props.get("Shooting", {}).get("checkbox", False),
             "phone": props["Phone"]["phone_number"],
             "contact": props["Contact"]["rich_text"][0]["text"]["content"]
                        if props["Contact"]["rich_text"] else "",
@@ -151,8 +162,11 @@ def get_clean_rows(start_from: str = None,
             "end_date": props["End Date"]["date"]["start"],
             "payment": props["Payment method"]["select"]["name"]
                        if props["Payment method"]["select"] else None,
+            "status": props["Booking status"]["select"]["name"]
+                        if props["Booking status"]["select"] else None,
             "num_quests": props["Num quests"]["select"]["name"]
                        if props["Num quests"]["select"] else None,
+            "uniq_id": props['ID']["unique_id"]["number"],
         }
         simplified.append(item)
 
@@ -164,6 +178,8 @@ def get_clean_rows(start_from: str = None,
         simplified = [r for r in simplified if r["id"] == match_id]
     if payment_methods:
         simplified = [r for r in simplified if r["payment"] in payment_methods]
+    if status:
+        simplified = [r for r in simplified if r["status"] in status]
 
     return simplified
 
@@ -236,7 +252,7 @@ def add_row(data: dict):
     if data.get("payment"):
         payload['properties']['Payment method'] = {"select": {"name": data.get("payment", "Waiting")}}
     if data.get("verify"):
-        payload['properties']['Verification'] = {"select": {"name": data.get("verify")}}
+        payload['properties']['Booking status'] = {"select": {"name": data.get("verify")}}
 
 
     # Отправка данных
@@ -246,7 +262,7 @@ def add_row(data: dict):
 
 
 # Обновить поле "Payment method" по ID (User ID)
-def update_payment_method_by_id(user_id: str, new_method: str) -> bool:
+def update_payment_method_by_user_id(user_id: str, new_method: str) -> bool:
     """
     Обновляет поле 'Payment method' для записи с указанным User ID.
 
@@ -288,6 +304,49 @@ def update_payment_method_by_id(user_id: str, new_method: str) -> bool:
     print(f"✅ Строка с User ID '{user_id}' успешно обновлена: способ оплаты → {new_method}")
     return True
 
+
+def update_status_by_uniq_id(uniq_id: str, new_status: str) -> bool:
+    """
+    Обновляет поле 'Payment method' для записи, где свойство ID (Unique ID) равно uniq_id.
+
+    :param uniq_id: значение поля 'ID' (тип Unique ID в базе)
+    :param new_status: новое значение для поля 'Payment method' (select)
+    :return: True если запись найдена и обновлена, False если не найдена
+    """
+    # 1. Ищем страницу по полю ID (Unique ID)
+    query_url = f"https://api.notion.com/v1/databases/{DATABASE_ID}/query"
+    query_payload = {
+        "filter": {
+            "property": "ID",
+            "unique_id": {
+                "equals": uniq_id
+            }
+        }
+    }
+    response = requests.post(query_url, headers=NOTION_HEADERS, json=query_payload)
+    response.raise_for_status()
+    results = response.json().get("results", [])
+    if not results:
+        print(f"❌ Строка с ID = {uniq_id} не найдена.")
+        return False
+
+    page_id = results[0]["id"]
+
+    update_url = f"https://api.notion.com/v1/pages/{page_id}"
+    update_payload = {
+        "properties": {
+            "Booking status": {
+                "select": {"name": new_status}
+            }
+        }
+    }
+    update_resp = requests.patch(update_url, headers=NOTION_HEADERS, json=update_payload)
+    update_resp.raise_for_status()
+
+    print(f"✅ Строка с ID = {uniq_id} успешно обновлена: способ оплаты → {new_status}")
+    return True
+
+
 def update_verification_by_page_id(page_id: str, new_status: str) -> bool:
     """
     Обновляет поле 'Verification' (select) для записи с указанным Notion page ID.
@@ -299,7 +358,7 @@ def update_verification_by_page_id(page_id: str, new_status: str) -> bool:
     url = f"https://api.notion.com/v1/pages/{page_id}"
     payload = {
         "properties": {
-            "Verification": {
+            "Booking status": {
                 "select": { "name": new_status }
             }
         }
@@ -374,8 +433,10 @@ def to_clean_rows(results):
             "start_date": datetime.datetime.strptime(props["Start Date"]["date"]["start"], "%Y-%m-%d").date(),
             "end_date": datetime.datetime.strptime(props["End Date"]["date"]["start"], "%Y-%m-%d").date(),
             "payment": props["Payment method"]["select"]["name"] if props["Payment method"]["select"] else None,
-            "created_time": process_created_time(page["created_time"])  # Преобразование времени создания
+            "created_time": process_created_time(page["created_time"]),
+            "uniq_id": props['ID']["unique_id"]["number"]
         }
+
         simplified.append(item)
 
     simplified.sort(key=lambda x: x["start_date"])
@@ -385,14 +446,14 @@ def to_clean_rows(results):
 
 def get_pages_by_user_id(
     user_id: str,
-    payment_methods: Optional[List[str]] = None
+    allowed_status: Optional[List[str]] = None
 ):
     """
     Получает все страницы с указанным User ID, опционально фильтрует
     их по списку способов оплаты и сортирует по Start Date от нового к старому.
 
     :param user_id: ID пользователя (значение поля 'User ID', а не Notion internal id)
-    :param payment_methods: Список названий вариантов в поле 'Payment method'.
+    :param allowed_status: Список названий вариантов в поле 'Payment method'.
                             Если не указано — фильтрация по оплате не выполняется.
     :return: Список обработанных данных страниц или None, если ничего не найдено.
     """
@@ -410,19 +471,19 @@ def get_pages_by_user_id(
             filtered.append(page)
 
     # 3. Фильтруем по способу оплаты, если передан список
-    if payment_methods:
+    if allowed_status:
         filtered = [
             page for page in filtered
             if (pm := page["properties"]
-                         .get("Payment method", {})
+                         .get("Booking status", {})
                          .get("select"))
-               and pm.get("name") in payment_methods
+               and pm.get("name") in allowed_status
         ]
 
     if not filtered:
         print(
             "❌ Строки с таким User ID"
-            + (f" и способом оплаты {payment_methods}" if payment_methods else "")
+            + (f" и статусом {allowed_status}" if allowed_status else "")
             + " не найдены."
         )
         return None

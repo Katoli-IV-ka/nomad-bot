@@ -3,7 +3,6 @@ from aiogram import Router, types, F
 from aiogram.fsm.context import FSMContext
 
 from contents.booking.input_date_contents import input_date_keyboard
-from utils.get_booked_dates import get_booking_dates
 
 router = Router()
 
@@ -66,13 +65,16 @@ async def switch_month(callback: types.CallbackQuery, state: FSMContext):
     year, month = int(year), int(month)
 
     data = await state.get_data()
+    check_in = data.get("check_in")
+    check_out = data.get("check_out")
+    booked = set(data.get("booked_dates", []))
 
     markup = input_date_keyboard(
         year = year,
         month = month,
-        check_in=data.get("check_in"),
-        check_out=data.get("check_out"),
-        booked_dates=await get_booking_dates(),
+        check_in=check_in,
+        check_out=check_out,
+        booked_dates=booked,
     )
 
     await callback.message.edit_reply_markup(reply_markup=markup)
