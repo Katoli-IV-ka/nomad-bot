@@ -24,7 +24,7 @@ async def to_summary(state: FSMContext, callback: types.CallbackQuery = None):
 
     # Получаем все данные о бронировании из состояния
     check_in = data.get("check_in")
-    check_out = data.get("check_out") + timedelta(days=1)
+    check_out = data.get("check_out")
     package = data.get("package_options", {})
     contact_name = data.get("contact_name")
     phone_number = data.get("phone_number")
@@ -37,9 +37,13 @@ async def to_summary(state: FSMContext, callback: types.CallbackQuery = None):
         media=InputMediaPhoto(
             media=summary_photo,
             caption=get_summary_text(
-                        check_in=check_in, check_out=check_out, package=package,
-                        contact_name=contact_name, phone_number=phone_number, username=username,
-                        total=total
+                check_in=check_in,
+                check_out=check_out+timedelta(days=1),
+                package=package,
+                contact_name=contact_name,
+                phone_number=phone_number,
+                username=username,
+                total=total
             ),
             parse_mode="HTML",
         ),

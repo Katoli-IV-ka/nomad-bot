@@ -33,6 +33,6 @@ async def wait_payment(callback: types.CallbackQuery, state: FSMContext):
     scheduler.add_job(
         check_payment,
         trigger='date',
-        run_date=datetime.now() + timedelta(minutes=60),
+        run_date=datetime.now() + timedelta(hours=2),
         args = [notion_page_id],
     )

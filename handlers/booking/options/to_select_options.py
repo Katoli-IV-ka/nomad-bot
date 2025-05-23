@@ -15,12 +15,11 @@ async def to_select_options(callback:CallbackQuery = None, state: FSMContext = N
     process_message = data.get('process_message')
     temp_message = data.get("temp_message")
 
-    #to_msg
     await process_message.edit_media(
         media=InputMediaPhoto(
             media=options_photo,
             caption="Выберите условия проживания:",
-            parse_mode="Markdown",
+            parse_mode="HTML",
         ),
         reply_markup=get_options_keyboard({})
     )

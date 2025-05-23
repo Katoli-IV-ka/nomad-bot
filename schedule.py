@@ -14,7 +14,7 @@ async def notify():
 
 scheduler.add_job(
     func=notify,
-    trigger=CronTrigger.from_crontab("0 7 * * *") #"0 7 * * *"
+    trigger=CronTrigger.from_crontab("1 * * * *") #"0 7 * * *"
 )
 
 

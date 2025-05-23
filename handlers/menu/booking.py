@@ -25,10 +25,10 @@ async def booking_callback(callback: types.CallbackQuery = None, message: Messag
     await to_select_date(message=message, state=state, callback=None)
 
 @router.callback_query(F.data == "back_to_booking")
-async def booking_callback(callback: types.CallbackQuery = None,  state: FSMContext = None):
+async def back_to_booking_callback(callback: types.CallbackQuery = None,  state: FSMContext = None):
     await state.clear()
 
     booked_dates = await get_booking_dates()
-    await state.update_data(booked_dates=booked_dates)
 
+    await state.update_data(booked_dates=booked_dates)
     await to_select_date(state=state, callback=callback)

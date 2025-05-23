@@ -30,8 +30,6 @@ async def accept_summary(callback: CallbackQuery, state: FSMContext, bot: Bot=No
         reply_markup=menu_keyboard()
     )
 
-
-
     await to_verify_booking(state=state, bot=bot)
 
 

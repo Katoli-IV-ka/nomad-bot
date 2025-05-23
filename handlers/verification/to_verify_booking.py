@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from aiogram import F, types, Router, Bot
 from aiogram.fsm.context import FSMContext
 
@@ -21,6 +23,8 @@ async def to_verify_booking(state: FSMContext, callback: types.CallbackQuery = N
     username = data.get("username")
     notion_page_id = data.get("notion_page_id")
 
+
+    print(check_in, check_out, package)
     total = calculate_booking_price(check_in, check_out, package)
 
     await bot.send_photo(
@@ -28,7 +32,7 @@ async def to_verify_booking(state: FSMContext, callback: types.CallbackQuery = N
         photo=booking_confirmation_photo,
         caption=booking_confirmation_text(
             check_in=check_in,
-            check_out=check_out,
+            check_out=check_out+timedelta(days=1),
             package=package,
             contact_name=contact_name,
             phone_number=phone_number,
@@ -36,5 +40,5 @@ async def to_verify_booking(state: FSMContext, callback: types.CallbackQuery = N
             total=total,
         ),
         reply_markup=booking_confirmation_keyboard(notion_page_id),
-        parse_mode="Markdown"
+        parse_mode="HTML"
     )

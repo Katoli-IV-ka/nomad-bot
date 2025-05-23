@@ -4,7 +4,7 @@ from aiogram.types import InlineKeyboardMarkup
 options_photo = "AgACAgIAAxkBAAIOL2guXZn6_d_npOwoYdhhFooAAZvzEQAD6TEbQ255SYCaRv7znI_OAQADAgADcwADNgQ"
 
 def get_options_text(package: dict) -> str:
-    text = "Вы выбрали:\n"
+    text = "<b>Вы выбрали:</b>\n"
 
     mapping = {
         "one_person": "👤 Для одного",
