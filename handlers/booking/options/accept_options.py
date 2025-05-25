@@ -2,7 +2,7 @@ from aiogram import Router, types, F
 from aiogram.fsm.context import FSMContext
 
 from handlers.booking.contact.to_contact import to_contact
-from states.booking_states import BookingState
+from states import BookingState
 
 router = Router()
 
@@ -13,7 +13,7 @@ async def accept_options(callback: types.CallbackQuery, state: FSMContext):
 
     package_options = data.get("package_options")
     if not package_options['one_person'] and not package_options['two_person']:
-        await callback.answer("Укажите количество гостей")
+        await callback.answer("Укажите количество гостей", show_alert=True)
         return
 
     await to_contact(state=state)

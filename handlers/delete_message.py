@@ -1,8 +1,5 @@
 from aiogram import Router, F
-from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
-
-from states.booking_states import BookingState
 
 router = Router()
 

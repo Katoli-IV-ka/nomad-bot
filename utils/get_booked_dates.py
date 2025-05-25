@@ -26,9 +26,6 @@ async def get_booking_dates():
         start_date = datetime.datetime.strptime(booking['start_date'], '%Y-%m-%d').date()
         end_date = datetime.datetime.strptime(booking['end_date'], '%Y-%m-%d').date()
 
-        # Сдвигаем дату окончания на 1 день назад
-        end_date -= datetime.timedelta(days=1)
-
         # Пропускаем, если начало не в текущем месяце или годе
         if (start_date.year < current_year) or \
            (start_date.year == current_year and start_date.month < current_month):

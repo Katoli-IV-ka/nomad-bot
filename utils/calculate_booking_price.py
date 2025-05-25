@@ -15,7 +15,7 @@ def calculate_booking_price(check_in, check_out, package: dict) -> int:
     if check_in == check_out:
         days = 1
     else:
-        days = (check_out - check_in).days
+        days = (check_out - check_in).days + 1
 
     total = 0
     for i in range(days):

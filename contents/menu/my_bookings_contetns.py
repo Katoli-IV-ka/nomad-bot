@@ -1,8 +1,10 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import List, Dict
 
 from aiogram.types import InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
+
+my_bookings_empty_text = 'Список ваших бронирований пуст, хотите забронировать дату?'
 
 my_bookings_photo = "AgACAgIAAxkBAAINIWgrgfyz0qQaVjVA2ZHUMN8xuJ7aAAKi6jEbiftgSZpI9sLiC2SXAQADAgADcwADNgQ"
 
@@ -22,7 +24,7 @@ def format_bookings_overview(bookings: List[Dict]) -> str:
     for b in bookings[:4]:
         # Приводим даты к строке в формате DD.MM.YYYY
         sd = b["start_date"]
-        ed = b["end_date"]
+        ed = b["end_date"] + timedelta(days=1)
         if isinstance(sd, str):
             sd = datetime.strptime(sd, "%Y-%m-%d").date()
         if isinstance(ed, str):
@@ -32,7 +34,7 @@ def format_bookings_overview(bookings: List[Dict]) -> str:
 
         # Добавляем блок по одному бронированию
         msg_lines.append(f"Дата заезда: {sd_str}")
-        msg_lines.append(f"Дата выезда: {ed_str}")
+        msg_lines.append(f"Дата выезда: {ed_str }")
         msg_lines.append(f"Стоимость: {b['cost']} р.")
         msg_lines.append("")  # пустая строка между записями
 

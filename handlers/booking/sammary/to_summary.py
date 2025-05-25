@@ -6,7 +6,7 @@ from aiogram.types import InputMediaPhoto
 
 from contents.booking.summary_contents import get_summary_text, get_summary_keyboard, summary_photo
 from database.notion_connect import add_row
-from states.booking_states import BookingState
+from states import BookingState
 from utils.calculate_booking_price import calculate_booking_price
 
 

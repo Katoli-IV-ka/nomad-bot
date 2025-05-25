@@ -2,7 +2,7 @@ from aiogram import Router, types, F
 from aiogram.fsm.context import FSMContext
 
 from handlers.booking.sammary.to_summary import to_summary
-from states.booking_states import BookingState
+from states import BookingState
 
 
 router = Router()

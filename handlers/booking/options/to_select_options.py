@@ -3,7 +3,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, InputMediaPhoto
 
 from contents.booking.options_contents import get_options_keyboard, options_photo
-from states.booking_states import BookingState
+from states import BookingState
 
 router = Router()
 

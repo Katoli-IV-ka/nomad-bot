@@ -1,7 +1,12 @@
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 from aiogram.types import ReplyKeyboardMarkup
 
-share_contact_photo = "AgACAgIAAxkBAAINI2grgiJaxKsaTrNzLj7Yab0FtoWPAAKj6jEbiftgSTa2pHZJM6bWAQADAgADcwADNgQ"
+request_contact_text = str(
+    'Пожалуйста, поделитесь вашим контактом.\n'
+    'Для этого нажмите внизу экрана кнопку "Поделиться контактом" 👇🏻'
+)
+
+share_contact_photo = 'AgACAgIAAxkBAAINI2grgiJaxKsaTrNzLj7Yab0FtoWPAAKj6jEbiftgSTa2pHZJM6bWAQADAgADcwADNgQ'
 
 def share_contact_keyboard() -> ReplyKeyboardMarkup:
     keyboard = ReplyKeyboardBuilder()

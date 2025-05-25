@@ -6,46 +6,50 @@ from contents.booking.input_date_contents import input_date_keyboard
 
 router = Router()
 
+@router.callback_query(F.data == "noop")
+async def confirm_booking(callback: types.CallbackQuery):
+    await callback.answer('🚫 Дата недоступна', show_alert=True)
+
 
 @router.callback_query(F.data.startswith("select"))
-async def select_date(callback, state: FSMContext):
-    # Вытаскиваем из state
+async def select_date(callback: types.CallbackQuery, state: FSMContext):
     data = await state.get_data()
-    check_in = data.get("check_in")
-    check_out = data.get("check_out")
+    check_in = data.get("check_in")      # date or None
+    check_out = data.get("check_out")    # date or None
     booked = set(data.get("booked_dates", []))
 
-    # распарсим callback
+    # Распарсим callback.data: "select|YYYY|MM|DD"
     _, y, m, d = callback.data.split("|")
     selected = date(int(y), int(m), int(d))
 
-    # если день занят — блокируем
-    if selected in booked:
-        await callback.answer("⛔ Дата недоступна", show_alert=True)
-        return
 
-    # если ещё нет ни одной даты — ставим check_in
-    if check_in is None and check_out is None:
-        await state.update_data(check_in=selected)
-
-    # если уже есть только check_in — ставим вторую и нормализуем порядок
-    elif check_in is not None and check_out is None:
-        # определяем границы
-        start, end = sorted([check_in, selected])
-        # проверяем любой конфликт
-        for i in range((end - start).days + 1):
-            d_ = start + timedelta(days=i)
-            if d_ in booked:
-                await callback.answer("⛔ В выбранном диапазоне есть занятые даты", show_alert=True)
-                return
-        # сохраняем оба
-        await state.update_data(check_in=start, check_out=end)
-
-    # если уже были обе даты — сбрасываем и ставим новую check_in
+    if check_in and not check_out and selected == check_in:
+        await state.update_data(check_in=None, check_out=None)
+    elif check_in and check_out and selected in {check_in, check_out}:
+        await state.update_data(check_in=None, check_out=None)
     else:
-        await state.update_data(check_in=selected, check_out=None)
+        if check_in is None and check_out is None:
+            await state.update_data(check_in=selected)
 
-    # обновляем клавиатуру
+        # Если есть только check_in — ставим check_out (сортируя границы)
+        elif check_in is not None and check_out is None:
+            start, end = sorted([check_in, selected])
+            # Проверяем занятые даты в диапазоне
+            for i in range((end - start).days + 1):
+                d_ = start + timedelta(days=i)
+                if d_ in booked:
+                    await callback.answer(
+                        "⛔ В выбранном диапазоне есть занятые даты",
+                        show_alert=True
+                    )
+                    return
+            await state.update_data(check_in=start, check_out=end)
+
+        # Если обе даты уже были — сбрасываем и ставим новую check_in
+        else:
+            await state.update_data(check_in=selected, check_out=None)
+
+    # Обновляем клавиатуру
     new = await state.get_data()
     kb = input_date_keyboard(
         year=selected.year,
@@ -56,6 +60,7 @@ async def select_date(callback, state: FSMContext):
     )
     await callback.message.edit_reply_markup(reply_markup=kb)
     await callback.answer()
+
 
 
 

@@ -3,8 +3,8 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import InputMediaPhoto
 
 from contents.booking.options_contents import get_options_text, to_options_kb
-from contents.booking.share_contact_contents import share_contact_keyboard, share_contact_photo
-from states.booking_states import BookingState
+from contents.booking.share_contact_contents import share_contact_keyboard, share_contact_photo, request_contact_text
+from states import BookingState
 
 router = Router()
 
@@ -14,18 +14,19 @@ async def to_contact(state: FSMContext, callback: types.CallbackQuery = None):
     package_options = data.get("package_options")
     process_message = data.get("process_message")
 
-    # to_msg
     await process_message.edit_media(
         media = InputMediaPhoto(
             media = share_contact_photo,
             caption = get_options_text(package_options),
+            parse_mode='HTML'
         ),
-        reply_markup = await to_options_kb()
+        reply_markup = await to_options_kb(),
+
     )
 
     # to_msg
     temp_message = await process_message.answer(
-        text = "Пожалуйста, поделитесь своим номером телефона:",
+        text = request_contact_text,
         reply_markup=share_contact_keyboard()
     )
 

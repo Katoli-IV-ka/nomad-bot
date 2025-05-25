@@ -5,7 +5,8 @@ from aiogram.types import Message
 
 from database.notion_connect import get_pages_by_user_id
 from contents.delete_message_kb import delete_message_kb
-from contents.menu.my_bookings_contetns import format_bookings_overview, my_bookings_photo, get_to_booking_keyboard
+from contents.menu.my_bookings_contetns import format_bookings_overview, my_bookings_photo, get_to_booking_keyboard, \
+    my_bookings_empty_text
 
 router = Router()
 
@@ -37,7 +38,7 @@ async def my_bookings(callback: types.CallbackQuery = None, message: Message = N
         # to_msg
         await message.answer_photo(
             photo=my_bookings_photo,
-            caption=f"У вас нет активных броней, хотите забронировать?",
+            caption=my_bookings_empty_text,
             reply_markup=get_to_booking_keyboard(),
             parse_mode='HTML'
         )
