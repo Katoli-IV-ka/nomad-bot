@@ -18,7 +18,9 @@ async def confirm_booking(callback: types.CallbackQuery, state: FSMContext):
 
     await callback.message.edit_caption(
         reply_markup = None,
-        caption = f"{callback.message.caption} \n"
-                  f"\n"
-                  f"🚫 Бронирование отклонено, администратор: {'@'+callback.from_user.username if callback.from_user.username else callback.from_user.first_name}"
+        caption=f"<b>Статус</b>: 🚫 Бронирование отклонено\n"
+                f"Администратор: {'@' + callback.from_user.username if callback.from_user.username else callback.from_user.first_name}\n"
+                f"———\n"
+                f"\n"
+                f"{callback.message.caption}"
     )

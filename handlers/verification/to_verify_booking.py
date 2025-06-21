@@ -15,6 +15,16 @@ router = Router()
 async def to_verify_booking(state: FSMContext, callback: types.CallbackQuery = None, bot: Bot = None):
     data = await state.get_data()
 
+    user_id = callback.from_user.id
+    photos = await bot.get_user_profile_photos(user_id, limit=1)
+
+    if photos.total_count and photos.photos:
+        # Берём самое большое фото из первой группы
+        photo_size = photos.photos[0][-1]
+        photo_id = photo_size.file_id
+    else:
+        photo_id = booking_confirmation_photo
+
     check_in = data.get("check_in")
     check_out = data.get("check_out")
     package = data.get("package_options", {})
@@ -23,13 +33,11 @@ async def to_verify_booking(state: FSMContext, callback: types.CallbackQuery = N
     username = data.get("username")
     notion_page_id = data.get("notion_page_id")
 
-
-    print(check_in, check_out, package)
     total = calculate_booking_price(check_in, check_out, package)
 
     await bot.send_photo(
         chat_id=ADMINS_CHAT,
-        photo=booking_confirmation_photo,
+        photo=photo_id,
         caption=booking_confirmation_text(
             check_in=check_in,
             check_out=check_out+timedelta(days=1),

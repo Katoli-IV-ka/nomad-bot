@@ -9,7 +9,9 @@ async def get_booking_dates():
         'Up-to-date booking',
         'Completed booking',
         'On verification',
-        'Waiting payment'
+        'Waiting payment',
+        'Prepayment received',
+        'Completed booking',
     ]
 
     bookings = get_clean_rows(status=allowed_status)

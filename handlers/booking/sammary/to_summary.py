@@ -47,6 +47,7 @@ async def to_summary(state: FSMContext, callback: types.CallbackQuery = None):
             ),
             parse_mode="HTML",
         ),
+        parse_mode="HTML",
         reply_markup=get_summary_keyboard()
     )
 

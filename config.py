@@ -8,6 +8,7 @@ BOT_TOKEN = str(os.getenv("BOT_TOKEN"))
 DEV_TELEGRAM_USER_ID = str(os.getenv("DEV_TELEGRAM_USER_ID"))
 ADMINS_CHAT = int(os.getenv("ADMINS_CHAT"))
 STAFF_TELEGRAM_ID = int(os.getenv("STAFF_TELEGRAM_ID"))
+MANAGER_TELEGRAM_ID = int(os.getenv("MANAGER_TELEGRAM_ID"))
 
 PRICES = {
     "weekday_price":           int(os.getenv("WEEKDAY_PRICE",       0)),

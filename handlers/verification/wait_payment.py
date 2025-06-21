@@ -4,9 +4,9 @@ from aiogram import F, Router, types
 from aiogram.fsm.context import FSMContext
 
 from contents.verification.payment_confirm_contetnts import confirm_payment_keyboard
-from database.notion_connect import update_verification_by_page_id, check_payment_status, \
+from database.notion_connect import update_verification_by_page_id, check_prepayment_status, \
     update_payment_method_by_page_id
-from handlers.verification.utils import check_payment
+from handlers.verification.utils import check_prepayment
 from schedule import scheduler
 
 router = Router()
@@ -20,18 +20,20 @@ async def wait_payment(callback: types.CallbackQuery, state: FSMContext):
         new_status="Waiting payment"
     )
 
-
     await callback.answer("💳 Бронирование ожидает оплаты")
 
     await callback.message.edit_caption(
         reply_markup = confirm_payment_keyboard(notion_page_id),
-        caption = f"{callback.message.caption} \n"
-                  f"\n"
-                  f"💳 Бронирование ожидает оплаты, администратор: {'@'+callback.from_user.username if callback.from_user.username else callback.from_user.first_name}"
+        caption=f"<b>Статус</b>: ⏳ Ожидает оплаты\n"
+                f"Администратор: {'@' + callback.from_user.username if callback.from_user.username else callback.from_user.first_name}\n"
+                f"———\n"
+                f"\n"
+                f"{callback.message.caption} \n",
+        parse_mode="HTML"
     )
 
     scheduler.add_job(
-        check_payment,
+        check_prepayment,
         trigger='date',
         run_date=datetime.now() + timedelta(hours=2),
         args = [notion_page_id],

@@ -183,7 +183,7 @@ def get_clean_rows(start_from: str = None,
 
     return simplified
 
-def check_payment_status(notion_page_id: str) -> bool:
+def check_prepayment_status(notion_page_id: str) -> bool:
     """
     Возвращает False, если в свойстве Payment method:
       - нет значения,
@@ -199,6 +199,25 @@ def check_payment_status(notion_page_id: str) -> bool:
 
     # Нет select или в чёрном списке — False
     if pm_select is None or pm_select.get("name") in ("Waiting", "Payment failed"):
+        return False
+    return True
+
+def check_payment_status(notion_page_id: str) -> bool:
+    """
+    Возвращает False, если в свойстве Payment method:
+      - нет значения,
+      - или стоит "Waiting" / "Payment failed".
+    В остальных случаях — True.
+    """
+    url = f"https://api.notion.com/v1/pages/{notion_page_id}"
+    resp = requests.get(url, headers=NOTION_HEADERS)
+    resp.raise_for_status()
+
+    props = resp.json().get("properties", {})
+    pm_select = props.get("Payment method", {}).get("select")
+
+    # Нет select или в чёрном списке — False
+    if pm_select is None or pm_select.get("name") in ("Waiting", "Payment failed", "Prepayment received"):
         return False
     return True
 

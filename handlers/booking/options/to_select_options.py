@@ -1,8 +1,10 @@
 from aiogram import Router, F
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, InputMediaPhoto
+from pyexpat.errors import messages
 
 from contents.booking.options_contents import get_options_keyboard, options_photo
+from handlers.menu.command_start import menu_cmd
 from states import BookingState
 
 router = Router()
@@ -15,6 +17,7 @@ async def to_select_options(callback:CallbackQuery = None, state: FSMContext = N
     process_message = data.get('process_message')
     temp_message = data.get("temp_message")
 
+
     await process_message.edit_media(
         media=InputMediaPhoto(
             media=options_photo,
@@ -23,6 +26,7 @@ async def to_select_options(callback:CallbackQuery = None, state: FSMContext = N
         ),
         reply_markup=get_options_keyboard({})
     )
+
 
     await state.update_data(
         package_options={
