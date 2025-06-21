@@ -28,12 +28,12 @@ async def confirm_booking(callback: types.CallbackQuery, state: FSMContext):
 
     if check_in:
         d_in = date.fromisoformat(str(check_in))
-        if d_in <= today:
+        if d_in < today:
             await callback.answer('❌ Дата бронирования должна быть в будущем.', show_alert=True)
             return
     if check_out:
         d_out = date.fromisoformat(str(check_out))
-        if d_out <= today:
+        if d_out < today:
             await callback.answer('❌ Дата бронирования должна быть в будущем.', show_alert=True)
             return
 
