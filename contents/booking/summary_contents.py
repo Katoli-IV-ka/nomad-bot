@@ -42,16 +42,16 @@ def get_summary_text(check_in, check_out, package: dict,
     return (
         f"<b>📆 Выбранные даты:</b>\n"
         f"Заселение: {check_in_text}\n"
-        f"Выселение:  {check_out_text}\n\n"
-
+        f"Выселение:  {check_out_text}\n"
+        f"\n"
         f"<b>🛍 Пакет услуг:</b>\n"
         f"{days} {'день' if days == 1 else 'дня' if days < 5 else 'дней'} {base}{kupel} \n"
         f"{child}\n"
-        f"{pet}\n\n"
-
+        f"{pet}\n"
+        f"\n"
         f"<b>👤 Контактные данные:</b>\n"
-        f"{contact_name}\n{phone_number}{user}\n\n"
-
+        f"{contact_name}\n{phone_number}{user}\n"
+        f"\n"
         f"<b>💳 Сумма к оплате:</b> {total}р."
     )
 

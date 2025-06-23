@@ -9,6 +9,6 @@ our_contacts_text = str(
     f"+375 (29) 227-99- 82\n"
     f"\n"
     f"Для PR и рекламы: инста <a href='https://www.instagram.com/nomad_cabin/'>@nomad_cabin</a>\n"
+    f"\n"
+    f"Пользовательское соглашение: https://teletype.in/@miramshurabaev/yVtouetl9m7"
 )
-
-
