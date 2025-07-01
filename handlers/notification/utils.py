@@ -1,25 +1,25 @@
 import datetime
 from datetime import date, timedelta
 
-from database.notion_connect import get_clean_rows, get_bookings_ending_on, get_bookings_start_on
+from database.notion_connect import get_clean_rows, get_bookings_ending_on, get_bookings_start_on, \
+    get_bookings_starting_within
+
 
 def get_prepayment_only() -> list[dict]:
-    tomorrow = (date.today() + timedelta(days=7)).isoformat()
-    allowed = ["By card", "Payment in Cash", "Other"]
-    status = ['Prepayment received']
-    return get_bookings_start_on(start_on=tomorrow, payment_methods=allowed, status=status)
+    return get_bookings_starting_within(
+        days=7,
+        status=["Prepayment received"]
+    )
 
 def get_tomorrow_bookings() -> list[dict]:
     tomorrow = (date.today() + timedelta(days=1)).isoformat()
-    allowed = ["By card", "Payment in Cash", "Other"]
     status = ['Waiting visit']
-    return get_bookings_start_on(start_on=tomorrow, payment_methods=allowed, status=status)
+    return get_bookings_start_on(start_on=tomorrow, status=status)
 
 def get_ending_bookings() -> list[dict]:
     tomorrow = (date.today() - timedelta(days=1)).isoformat()
-    allowed = ["By card", "Payment in Cash", "Other"]
     status = ['Up-to-date booking']
-    return get_bookings_ending_on(end_on=tomorrow, payment_methods=allowed, status=status)
+    return get_bookings_ending_on(end_on=tomorrow, status=status)
 
 async def get_next_booking_start_date() -> datetime.date | None:
     bookings = get_clean_rows()

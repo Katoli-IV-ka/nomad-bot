@@ -4,6 +4,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 BOT_TOKEN = str(os.getenv("BOT_TOKEN"))
+NOTION_TOKEN = str(os.getenv("NOTION_TOKEN"))
+DATABASE_ID = str(os.getenv("DATABASE_ID"))
 
 DEV_TELEGRAM_USER_ID = str(os.getenv("DEV_TELEGRAM_USER_ID"))
 ADMINS_CHAT = int(os.getenv("ADMINS_CHAT"))

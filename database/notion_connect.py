@@ -3,11 +3,10 @@ from typing import List, Dict, Optional
 
 import requests
 
+from config import NOTION_TOKEN, DATABASE_ID
 from utils.process_created_time import process_created_time
+from datetime import date, timedelta
 
-# Конфигурация для подключения к Notion API
-NOTION_TOKEN='secret_AbbSZWbyZO8zLqWHAL6WCK2nYRihGYD5kOCZMvUUAT5'
-DATABASE_ID="1c8fa05ac45f80c499ecfef705bb0282"
 NOTION_HEADERS = {
     "Authorization": f"Bearer {NOTION_TOKEN}",
     "Content-Type": "application/json",
@@ -64,6 +63,51 @@ def get_bookings_ending_on(end_on: str,
             simplified = [r for r in simplified if r["payment"] in payment_methods]
         if status:
             simplified = [r for r in simplified if r["status"] in status]
+
+    return simplified
+
+def get_bookings_starting_within(days: int = 7,
+                                 payment_methods: List[str] = None,
+                                 status: List[str] = None) -> list[dict]:
+    cutoff = (date.today() + timedelta(days=days)).isoformat()
+    url = f"https://api.notion.com/v1/databases/{DATABASE_ID}/query"
+    body = {
+        "filter": {
+            "property": "Start Date",
+            "date": {
+                "on_or_after": date.today().isoformat(),
+                "on_or_before": cutoff
+            }
+        }
+    }
+    resp = requests.post(url, headers=NOTION_HEADERS, json=body)
+    resp.raise_for_status()
+    raw = resp.json().get("results", [])
+
+    simplified = []
+    for page in raw:
+        props = page["properties"]
+        simplified.append({
+            "id": props["User ID"]["title"][0]["text"]["content"] if props["User ID"]["title"] else "",
+            "cost": props["Cost"]["number"],
+            "kids": props["Kids"]["checkbox"],
+            "pets": props["Pets"]["checkbox"],
+            "koupel": props["Kupel"]["checkbox"],
+            "phone": props["Phone"]["phone_number"],
+            "contact": props["Contact"]["rich_text"][0]["text"]["content"] if props["Contact"]["rich_text"] else "",
+            "note": props["Note"]["rich_text"][0]["text"]["content"] if props["Note"]["rich_text"] else "",
+            "start_date": props["Start Date"]["date"]["start"],
+            "end_date": props["End Date"]["date"]["start"],
+            "payment": props["Payment method"]["select"]["name"] if props["Payment method"]["select"] else None,
+            "status": props["Booking status"]["select"]["name"] if props["Booking status"]["select"] else None,
+            "num_quests": props["Num quests"]["select"]["name"] if props["Num quests"]["select"] else None,
+            "uniq_id": props["ID"]["unique_id"]["number"],
+        })
+
+    if payment_methods:
+        simplified = [r for r in simplified if r["payment"] in payment_methods]
+    if status:
+        simplified = [r for r in simplified if r["status"] in status]
 
     return simplified
 
