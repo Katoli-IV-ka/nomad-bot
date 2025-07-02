@@ -1,22 +1,23 @@
-# Используем официальный образ Python с минимальной сборкой
-FROM python:3.11-slim
+# Используем минимальный образ с Python
+FROM python:3.9-slim
 
-# Установим рабочую директорию
+# Устанавливаем необходимые системные пакеты
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends gcc libssl-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Устанавливаем зависимости для Python
+COPY requirements.txt /app/requirements.txt
+RUN pip install --no-cache-dir -r /app/requirements.txt
+
+# Копируем весь проект в контейнер
+COPY . /app
+
+# Устанавливаем рабочую директорию
 WORKDIR /app
 
-# Установим только необходимые пакеты
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends gcc libssl-dev && \
-    rm -rf /var/lib/apt/lists/*
+# Открываем порт (если нужно)
+EXPOSE 8000
 
-# Копируем файл зависимостей и устанавливаем зависимости
-COPY nomad-bot-main/requirements.txt ./
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Копируем код проекта
-COPY nomad-bot-main/ .
-
-# По необходимости можно добавить переменные окружения или порты
-
-# Команда для запуска бота
-CMD ["python", "main.py"]
+# Запускаем приложение (или команду, чтобы оно стартовало)
+CMD ["python", "your_app.py"]  # Замените на нужную команду для вашего проекта
