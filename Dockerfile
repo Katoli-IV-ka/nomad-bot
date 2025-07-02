@@ -1,31 +1,22 @@
-# Use official Python slim image
+# Используем официальный образ Python с минимальной сборкой
 FROM python:3.11-slim
 
-# Set working directory
+# Установим рабочую директорию
 WORKDIR /app
 
-# Install system dependencies and convert requirements from UTF-16 to UTF-8
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-       gcc \
-       libssl-dev \
-    && rm -rf /var/lib/apt/lists/* \
-    # Convert requirements file encoding
-    && iconv -f utf-16 -t utf-8 requirements.txt > requirements.utf8.txt \
-    && mv requirements.utf8.txt requirements.txt
+# Установим только необходимые пакеты
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends gcc libssl-dev && \
+    rm -rf /var/lib/apt/lists/*
 
-# Copy and install Python dependencies
+# Копируем файл зависимостей и устанавливаем зависимости
 COPY nomad-bot-main/requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy application code
-COPY nomad-bot-main/ .
+# Копируем код проекта
+COPY nomad-bot-main/ ./
 
-# Copy .env if you prefer baked-in environment variables (optional)
-# COPY .env ./
+# По необходимости можно добавить переменные окружения или порты
 
-# Expose port if your bot serves webhooks (optional)
-# EXPOSE 8443
-
-# Define default command
+# Команда для запуска бота
 CMD ["python", "main.py"]
