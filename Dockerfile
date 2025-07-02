@@ -14,7 +14,7 @@ COPY nomad-bot-main/requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Копируем код проекта
-COPY nomad-bot-main/ ./
+COPY nomad-bot-main/ .
 
 # По необходимости можно добавить переменные окружения или порты
 
