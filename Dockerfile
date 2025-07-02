@@ -1,5 +1,5 @@
 # Используем минимальный образ с Python
-FROM python:3.9-slim
+FROM python:3.11-slim
 
 # Устанавливаем необходимые системные пакеты
 RUN apt-get update \
@@ -20,4 +20,4 @@ WORKDIR /app
 EXPOSE 8000
 
 # Запускаем приложение (или команду, чтобы оно стартовало)
-CMD ["python", "main.py"]
+CMD ["python", "your_app.py"]  # Замените на нужную команду для вашего проекта
