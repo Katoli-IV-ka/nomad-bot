@@ -7,7 +7,7 @@ from handlers.notification.notify_staff import notify_staff
 
 scheduler = AsyncIOScheduler(
     job_defaults={
-        'misfire_grace_time': 60*60*24,  #1 час просрочки
+        'misfire_grace_time': 60*60*24,  #24 час просрочки
     }
 )
 
@@ -20,7 +20,7 @@ async def notify():
 
 scheduler.add_job(
     func=notify,
-    trigger=CronTrigger.from_crontab("* * * * *") #0 7 * * *
+    trigger=CronTrigger.from_crontab("0 7 * * *") #
 )
 
 
